@@ -1,5 +1,12 @@
 var http = require('http'); 
 var url = require('url'); 
+var fs = require('fs'); 
+
+
+//new.html located in views/Posts/new.html
+
+
+var newPostFormHTML = fs.readFileSync('views/Posts/new.html'); 
 
 function renderNewPostForm( request, response)
 {
@@ -7,13 +14,13 @@ function renderNewPostForm( request, response)
 	response.writeHead('200', 
 	{ 
 
-		'Content-type' : 'text/plain'
+		'Content-type' : 'text/html; charset=utf-8'
 
 	}); 
 
 	//response.write("HelloWorld"); 
 
-	response.end("Hello World"); 
+	response.end(newPostFormHTML); 
 
 
 } ; 
@@ -23,11 +30,11 @@ function render404page(request, response)
 {
 
 	response.writeHead(404); //send back error code in the header. 
-	
+
 
 	//response.write("HelloWorld"); 
 
-	response.end("Error! 404 Page not found."); 
+	response.end('Error! 404 Page not found.'); 
 
 
 }
@@ -57,6 +64,6 @@ else
 
 server.listen(8888); 
 
-console.log("listening to http://127.0.0.1 on port 8888"); 
+console.log('listening to http://127.0.0.1 on port 8888'); 
 
 
