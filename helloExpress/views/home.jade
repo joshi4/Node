@@ -1,0 +1,66 @@
+//extends layout
+
+
+include mixins
+
+h1 Hello Express
+h2= title
+style
+	li {background: blue}
+
+- var name = "<em>Shantanu</em>"
+- var fn = function(){return "HelloWorld!!"; }; 
+ul#nav
+	li.current one
+	li !{name}
+	li three
+	li= fn() //anything after the = will be interpretted as javascript. 
+	a(href="/other") Go to Other. 
+p I want to put a lot of text here .... 
+
+p 
+	| I want 
+	| to 
+	| jlksdfj lsdj
+	| jdsfjlkdsajf
+
+// something much easier is .
+
+p.
+	I want 
+	to put 
+	a lot of
+	text here 
+	learning jade
+	syntax. 
+
+
+- var followerCount = 2 ; 
+
+
+// native jade if else. 
+
+if followerCount === 0 
+	| You hsbr no followers. 
+else if followerCount === 1}
+	| you have one follower.
+else
+	| you have #{followerCount} followers.
+
+
+
+//exploring the foreach construct. 
+
+- var users = [{name: "sdlkfsa", email : "sdfjaj@gmail.com"}, {name: "qwerqwr", email : "qerwqew@gmail.com"}]; 
+
+//now incorporating mixins. 
+
+
+
+ul
+	each user, i in users
+		mixin userLI(user)
+		
+
+
+
