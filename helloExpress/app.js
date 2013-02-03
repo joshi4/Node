@@ -48,44 +48,7 @@ app.configure(function(){
 
 //Writing your own routes. 
 
-app.get("/", function(req,res)
-  {
-    res.render("home.jade" ,{ title: "Building webApps in node with Express"}); 
-    //res.send("Hello, Express!")
-  }
 
-  );
-
-
-
-app.get("/other", function(req,res)
-{
-  res.send("You are viewing the other page.  "); 
-});
-
-//using a regex for a route. .
-
-app.get(/\/users\/(\d*)\/?(edit)?/ , function a(req,res)
-
-{
-  var message = "User #" + req.params[0] +" 's profile"; 
-
-  if (req.params[1] == 'edit') {message = "Editing " + message; } 
-    else{ message = "Viewing " + message ; }
-
-res.send(message)
-
-}//end of callback.
-
-  );//end of get request
-
-
-
-app.get("/users/:userId", function (req,res) {
-
-  //a(req,res); 
-  res.send("<h1>Hello! user: " + req.params.userId); 
-});
 
 
 
