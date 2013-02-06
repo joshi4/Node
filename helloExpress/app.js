@@ -10,7 +10,11 @@ var express = require('express')
   
   , path = require('path'); */
 
-var app = express();
+var app = express(); 
+
+
+
+
 
 app.configure(function(){
   app.set('port', process.env.PORT || 3000);
@@ -34,29 +38,51 @@ app.configure(function(){
   //method override on this. 
 
   app.use(express.methodOverride()); 
-
+  app.use(express.cookieParser()); 
+  app.use(express.session({secret: 'raaz'})); 
   //static folder for our CSS stylesheets. 
   app.use(app.router); //search for the appropriate route before dropping further. 
 
-  app.use(express.static(__dirname + 'public'));
+  app.use(express.static(__dirname + '/public'));
+  app.use(function(req,res){
+    res.send(404,"Page not found")
+  }); 
 
 
-  
+  app.use(function(err,req,res,next) {
+    res.status(err.status || 404 ); 
+    res.send(err.message); 
+  })
 
 }); 
 
 
-//Writing your own routes. 
+//layer of middleware. 
+
+app.param('username', function (req,res,next,username) {
+  // body...
+  if ( username !== 'shantanu'){
+    req.user = username ; 
+    next(); 
+  }
+  else
+  {
+    next(new Error("User does not exist")); 
+  }
+}); 
+
+app.get('/users/:username', function(req,res,next) {
+  
+  res.send(req.user + "'s Profile Page"); 
+}); 
 
 
 
 
+app.get('/', function(req,res){
+  res.send("Index"); 
+})
 
-
-//making a post request. 
-
-//for a post request the relevant info is in the body of the req 
-//message. 
 
 app.post("/users", function(req,res)
    {
