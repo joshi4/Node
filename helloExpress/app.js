@@ -3,8 +3,14 @@
  * Module dependencies.
  */
 
-var express = require('express')
-  , http = require('http')
+
+/**
+ * Module dependencies.
+ */
+
+var  express = require('express')
+  , http = require('http'),
+    mongoose = require('mongoose'); 
  /* , routes = require('./routes')
   , user = require('./routes/user')
   
@@ -39,12 +45,12 @@ app.configure(function(){
 
   app.use(express.methodOverride()); 
   app.use(express.cookieParser()); 
-  app.use(express.session({secret: 'raaz'})); 
   //static folder for our CSS stylesheets. 
   app.use(app.router); //search for the appropriate route before dropping further. 
 
   app.use(express.static(__dirname + '/public'));
   app.use(function(req,res){
+    console.log(req.body); 
     res.send(404,"Page not found")
   }); 
 
@@ -59,57 +65,116 @@ app.configure(function(){
 
 //layer of middleware. 
 
-app.param('username', function (req,res,next,username) {
-  // body...
-  if ( username !== 'shantanu'){
-    req.user = username ; 
-    next(); 
-  }
-  else
-  {
-    next(new Error("User does not exist")); 
-  }
-}); 
 
-app.get('/users/:username', function(req,res,next) {
-  
-  res.send(req.user + "'s Profile Page"); 
-}); 
-
-
-
-
-app.get('/', function(req,res){
-  res.send("Index"); 
-})
-
-
-app.post("/users", function(req,res)
-   {
-      res.send("Creating new user with the name " + req.body.username + ".\n"); 
-
-   }//end of callback 
-   );//end of post
-
-
-
- /*app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.favicon());
-  app.use(express.logger('dev'));
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(app.router);
-  app.use(require('less-middleware')({ src: __dirname + '/public' }));
-  app.use(express.static(path.join(__dirname, 'public')));
+mongoose.connect('mongodb://localhost/helloexpress'); 
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function callback () {
+  // yay!
+  console.log("Connected to DB"); 
 });
 
-app.configure('development', function(){
-  app.use(express.errorHandler());
+
+
+var UserSchema = new mongoose.Schema({ 
+  name: String,
+  email: String,
+  age: Number
+}) ; 
+
+var Users = mongoose.model('Users', UserSchema); 
+
+
+
+//PARAM call
+
+app.param('name', function(req,res,next,name){
+  Users.find({name: name}, function(err,docs){
+    req.user = docs[0] ; 
+    next() ; 
+  }); 
+}); 
+
+//Display newly created user
+
+
+//Update Route
+
+app.put('/users/:name', function(req,res){
+  console.log("Entered update") ;
+  var b = req.body ; 
+  Users.update(
+  { name: req.params.name }, 
+  { name: b.name, age: b.age, email: b.email }, 
+  function(err){ console.log(b.name); res.redirect("/users/" + b.name); }
+
+  ); 
 });
 
-app.get('/', routes.index);
-app.get('/users', user.list); */
+
+
+
+
+
+//VIEW USERS
+app.get('/users', function(req,res){
+  Users.find({},function (err,docs){
+    res.render('users/index',{users: docs} ); 
+  }); 
+}); 
+
+
+//NEW USER
+app.get('/users/newb', function(req,res){
+  res.redirect('/users/new');  
+}); 
+
+app.get('/users/new', function(req,res){
+  res.render("users/new") ; 
+}); 
+
+// CREATE 
+
+app.post('/users',function(req,res){
+  var b = req.body ; 
+  new Users({
+    name: req.body.name,
+    email: b.email,
+    age: b.age
+
+  }).save(function(err,user){
+      if(err) res.json(err); 
+      res.redirect('/users/' + user.name) ; 
+    });  
+}); 
+
+
+
+
+
+//EDIT user. 
+
+app.get('/users/:name/edit', function(req,res){
+  res.render('users/edit', {user: req.user}); 
+
+});
+
+
+app.get('/users/:name', function(req,res){
+  console.log("Entered show users") ;
+  res.render('users/show', {user: req.user}); 
+}); 
+
+
+
+// we have now done CRU and just need to DELETE users. 
+
+app.delete('/users/:name', function(req,res) {
+  Users.remove({name: req.params.name}, function(err){
+    res.redirect('/users'); 
+  }); 
+
+}) ; 
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
