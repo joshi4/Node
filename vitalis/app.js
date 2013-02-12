@@ -96,7 +96,7 @@ app.post('/login',function(req,res){
       //try again. 
       else{
 
-        res.redirect("/users/" + user.username); 
+        res.redirect("/users/" + b.username); 
           } 
     } ); 
 }); 
