@@ -1,0 +1,11 @@
+h1 New Patient Form
+form(method="POST", action="/new/patient")
+	p Name:
+		input#name(type="text",name="name") 
+	p Doctor:
+		input#doctor(type="text",name="doctor")
+	p Gender:
+		input#gender(type="text", name="gender")
+	p ID:
+		input#patientId(type="text", name="patientId")
+	p: button(type="submit") Create

@@ -57,6 +57,30 @@ var loginInfo = mongoose.model('loginInfo', loginSchema);
 
 //----------------------------------------------------------
 
+//Creating the Patient Schema: 
+
+var patientSchema = new mongoose.Schema({
+  name: String,
+  doctor: String,
+  gender: String,
+  patientId: String,
+  pulse: String,
+  oxygen: String,
+  temp: String,
+  fall: Number,
+  Alarm: Number}); 
+
+  /*Explanation:
+    1. name,gender: Self explanatory
+    2. Unique patient ID for each patient with which we can search DB
+    3. Pulse,oxygen,temp - Strings so that we can have multiple values and thus use them in 
+       plotting graphs this may change later. 
+    4.fall and alarm are basically zero or one values. */ 
+
+
+//compiling the Schema to a module:
+
+var patientInfo = mongoose.model('patientInfo',patientSchema); 
 
 
 
@@ -80,8 +104,37 @@ app.get('/users/new', function(req,res){
 
 app.get('/users/:username', function(req,res){
   console.log("Display paitents for Dr. " + req.params.username ); 
-  res.render('comingsoon'); 
+  //search all the patients: 
+  patientInfo.find({doctor: req.params.username}, function(err,docs){
+      res.render('users/patientlist', {patients: docs}); 
+    }); 
+ // res.render('comingsoon'); 
 }); 
+
+app.get('/new/patient', function(req,res){
+    res.render('users/addpatient'); 
+  });
+
+
+//POST REQUEST TO CREATE A NEW PATIENT. 
+app.post('/new/patient/?', function(req,res){
+  var b = req.body 
+  new patientInfo({
+  name: b.name,
+  doctor: b.doctor,
+  gender: b.gender,
+  patientId: b.patientId,
+  pulse: "",
+  oxygen: "",
+  temp: "",
+  fall: "",
+  Alarm: ""}).save(function(err,patient){
+    if(err) res.json(err); 
+    res.redirect('/users/' + b.doctor); 
+  });
+});
+
+
 //the login buttong creates a POST request for /login 
 
 app.post('/login',function(req,res){
@@ -106,7 +159,6 @@ app.post('/login',function(req,res){
 //The signup button generates a POST request for /users. 
 
 
-
 app.post('/users', function(req,res){
   var b = req.body ; 
   //save new user to database. 
@@ -127,9 +179,9 @@ app.post('/users', function(req,res){
 }); 
 
 
-app.get('users/:username', function(req,res){
+/*app.get('users/:username', function(req,res){
   res.render('users/showpatients', {user: req.params.username}); 
-});
+});*/
 
 
 
