@@ -1,0 +1,14 @@
+--- 
+applications: 
+  .: 
+    infra: aws
+    url: ${name}.${target-base}
+    mem: 64M
+    instances: 1
+    framework: 
+      info: 
+        exec: 
+        mem: 64M
+        description: Node.js Application
+      name: node
+    name: Vitalis
