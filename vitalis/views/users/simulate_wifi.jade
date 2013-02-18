@@ -1,0 +1,22 @@
+h1 Update Patient
+form(method="POST", action="/updatepatient")
+	input(type='hidden', name='_method', value='PUT' )	
+	p Pulse:
+		input#pulse(type="text",name="pulse") 
+	p Oxygen:
+		input#oxygen(type="text",name="oxygen") 
+	p Temperature:
+		input#temperature(type="text",name="temperature") 
+	p Fall:
+		input#fall(type="text",name="fall",value='0') 
+	p Alarm:
+		input#alarm(type="text",name="alarm",value='0') 
+	p PatientID:
+		input#patientID(type="text",name="patientID")
+
+
+	//- p Email:
+		input#email(type="email", name="email",value="#{user.email}") 
+	//- p Age:
+		input#age(type="number", name="age",value="#{user.age}") 
+	p: button(type="submit") Test

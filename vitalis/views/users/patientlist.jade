@@ -2,7 +2,7 @@ h1 All Patients
 
 ul
 	each patient in patients
-		li: a(href= "/patient/#{patient.name}") #{patient.name} 
+		li: a(href= "/#{patient.doctor}/patient/#{patient.name}") #{patient.name} 
 
 	li
 		form(action='/new/patient', method="GET")
