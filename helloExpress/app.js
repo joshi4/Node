@@ -114,7 +114,9 @@ app.put('/users/:name', function(req,res){
 
 
 
-
+app.get('/charts',function(req,res){
+  res.render('users/charts', {scripts: ['javascripts/jscharts.js']}); 
+});
 
 //VIEW USERS
 app.get('/users', function(req,res){
@@ -160,10 +162,10 @@ app.get('/users/:name/edit', function(req,res){
 });
 
 
-app.get('/users/:name', function(req,res){
+/*app.get('/users/:name', function(req,res){
   console.log("Entered show users") ;
   res.render('users/show', {user: req.user}); 
-}); 
+}); */
 
 
 
