@@ -1,21 +1,97 @@
-h1 Patients name is #{patients.name}
+html
+	head
+		- each s in scripts
+			script(src=s)
+	body 
+		h1 Patients name is #{patients.name}
+		ul
+			li
+				doctors Surgeon: Dr. #{patients.doctor}
+			li
+				gender Gender: #{patients.gender}
+			li
+				id PatientID: #{patients.patientId}
+			li
+				pulse Pulse: #{patients.pulse}
+			li
+				| <canvas id="mycanvas" width="400" height="100"></canvas>
+				script(type="text/javascript")
+					var smoothie = new SmoothieChart();
+					var i = 0 ; 
+					var pulse = [ #{patients.pulse} ]; 
+					smoothie.streamTo(document.getElementById("mycanvas"), 1000 /*delay*/);
+					var line1 = new TimeSeries();
+					setInterval(function() {
+					line1.append(new Date().getTime(),pulse[i] );
+					i= i+ 1 ; 
+					if (i == pulse.length){
 
-ul
-	li
-		doctors Surgeon: Dr. #{patients.doctor}
-	li
-		gender Gender: #{patients.gender}
-	li
-		id PatientID: #{patients.patientId}
-	li
-		pulse Pulse: #{patients.pulse}
-	li
-		oxygen Oxygen: #{patients.oxygen}
-	li
-		temperature Temperature: #{patients.temp}
-	li
-		fall Fall: #{patients.fall}
-	li
-		alarm Alarm: #{patients.Alarm} 
+					i = 0 ; 
+							
+					}
+					}
+					, 1000);
+
+					
+					smoothie.addTimeSeries(line1);
+			li
+				oxygen Oxygen: #{patients.oxygen}
+
+			li
+				| <canvas id="mycanvas_oxygen" width="400" height="100"></canvas>
+				script(type="text/javascript")
+					var smoothie1 = new SmoothieChart();
+					var i1 = 0 ; 
+					var oxygen = [ #{patients.oxygen} ]; 
+					smoothie1.streamTo(document.getElementById("mycanvas_oxygen"), 1000 /*delay*/);
+					var line2 = new TimeSeries();
+					setInterval(function() {
+					line2.append(new Date().getTime(), oxygen[i1] );
+					i1= i1+ 1 ; 
+					if (i1 == oxygen.length){
+
+					i1 = 0 ; 
+							
+					}
+					}
+					, 1000);
+
+					
+					smoothie1.addTimeSeries(line2);
+
+			li
+				temperature Temperature: #{patients.temp}
+
+			li
+				| <canvas id="mycanvas_temp" width="400" height="100"></canvas>
+				script(type="text/javascript")
+					var smoothie2 = new SmoothieChart();
+					var j = 0 ; 
+					var temp = [ #{patients.temp} ]; 
+					smoothie2.streamTo(document.getElementById("mycanvas_temp"), 1000 /*delay*/);
+					var line3 = new TimeSeries();
+					setInterval(function() {
+					line3.append(new Date().getTime(),temp[j] );
+					j= j+ 1 ; 
+					if (j == temp.length){
+
+					j = 0 ; 
+							
+					}
+					}
+					, 1000);
+
+					
+					smoothie2.addTimeSeries(line3);	
+
+			li
+				fall Fall: #{patients.fall}
+			li
+				alarm Alarm: #{patients.Alarm} 
+
+		
+
+
+
 
 	

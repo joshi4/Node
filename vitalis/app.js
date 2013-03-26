@@ -122,7 +122,8 @@ app.get('/:username/patient/:patientname',function(req,res){
     name: req.params.patientname
   }, function(err,docs){
     console.log(docs); 
-    res.render('patients/patientinfo', {patients: docs[0]}); 
+    res.render('patients/patientinfo', {patients: docs[0], 
+                                        scripts: ['../../javascripts/smoothie.js']}); 
     // also make post requests, based on unique id. 
   });
 });
