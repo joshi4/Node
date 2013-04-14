@@ -180,8 +180,127 @@ app.get('/updatepatient', function(req,res){
   res.render('users/simulate_wifi'); 
 });
 
+app.get('/patientupdate', function(req,res){
+  var string_to_parse = req.query.data;
+  //console.log(string_to_parse);
+  console.log(string_to_parse);
+  var pulse_data = string_to_parse.split(","); //array of pulse_data
+  var spo2_data = pulse_data.pop().split(";"); //array of spo2_data
+  var temp_data = spo2_data.pop().split(":");  //array of temp data
+  var alarm_flag = temp_data.pop().split("$"); //array of alarm flags. 
+  console.log(pulse_data); 
+  console.log(spo2_data); 
+  console.log(temp_data);
+  console.log(alarm_flag); 
+
+
+
+  // update the fall and alarm flags: 
+
+    patientInfo.update(
+{
+  patientId: "demo"
+}, 
+{
+  $set:
+  {
+    fall: alarm_flag[0],
+    Alarm: alarm_flag[1]
+    
+
+  }
+},{upsert: true},  function(err, data)
+{
+  console.log(data); 
+  //res.redirect('/updatepatient'); 
+  
+}
+);
+  
+
+
+  //update the pulse readings.
+  for (i = 0 ; i < pulse_data.length; i++)
+  {
+
+    patientInfo.update(
+{
+  patientId: "demo"
+}, 
+{
+  $push:
+  {
+    pulse: pulse_data[i]
+    
+
+  }
+},{upsert: true},  function(err, data)
+{
+  console.log(data); 
+  //res.redirect('/updatepatient'); 
+  
+}
+);
+  } //end of for loop
+  
+ 
+
+//update the o2 readings. 
+
+for (i = 0 ; i < spo2_data.length; i++)
+  {
+
+    patientInfo.update(
+{
+  patientId: "demo"
+}, 
+{
+  $push:
+  {
+    oxygen: spo2_data[i]
+    
+
+  }
+},{upsert: true},  function(err, data)
+{
+  console.log(data); 
+  //res.redirect('/updatepatient'); 
+  
+}
+);
+  } //end of for loop
+
+ // update the temp readings: 
+
+for (i = 0 ; i < temp_data.length; i++)
+  {
+
+    patientInfo.update(
+{
+  patientId: "demo"
+}, 
+{
+  $push:
+  {
+    temp: temp_data[i]
+    
+
+  }
+},{upsert: true},  function(err, data)
+{
+  console.log(data); 
+  //res.redirect('/updatepatient'); 
+  
+}
+);
+  } //end of for loop
+
+  res.send(200); //, req.query.value+";"+req.query.p2);  
+})
+
 app.put('/updatepatient', function(req,res){
 var b = req.body ; 
+//console.log(req); 
 console.log(b.fall);
 console.log(b.alarm); 
 patientInfo.update(
